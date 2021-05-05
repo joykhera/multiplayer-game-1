@@ -3,7 +3,6 @@ export default class Enemy {
         this.size = size
         this.x = area.x + area.size / 2
         this.y = area.y + area.size / 2
-        this.color = 'black'
         let angle = Math.random() * Math.PI * 2
         this.velX = Math.cos(angle) * speed;
         this.velY = Math.sin(angle) * speed;
@@ -33,6 +32,17 @@ export default class Enemy {
         ) {
             if (this.x - this.size < area.sz.x || this.x + this.size > area.sz.x + area.szSize) this.velX *= -1
             if (this.y - this.size < area.sz.y || this.y + this.size > area.sz.y + area.szSize) this.velY *= -1
+        }
+    }
+
+    getState() {
+        return {
+            x: this.x,
+            y: this.y,
+            size: this.size,
+            velX: this.velX,
+            velY: this.velY,
+            playing: this.playing
         }
     }
 }

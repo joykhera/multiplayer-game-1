@@ -49,5 +49,6 @@ export default class OtherPlayer {
             ctx.textAlign = "center";
             ctx.fillText(`${this.time}`, this.curX - player.x + canvas.width / 2, this.curY - player.y + canvas.height / 2 - this.size - 10)
         }
+        else this.color = 'green'
     }
 }

@@ -3,7 +3,7 @@ export default class Enemy {
         this.x = enemy.x
         this.y = enemy.y
         this.size = enemy.size
-        this.color = enemy.color
+        this.color = 'black'
         this.velX = enemy.velX
         this.velY = enemy.velY
         this.playing = enemy.playing

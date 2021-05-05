@@ -71,6 +71,20 @@ class Player {
             }
         }
     }
+
+    getState() {
+        return {
+            x: this.x,
+            y: this.y,
+            size: this.size,
+            speed: this.speed,
+            currentSpeed: this.currentSpeed,
+            color: this.color,
+            playing: this.playing,
+            alive: this.alive,
+            time: this.time
+        }
+    }
 }
 
 export default Player

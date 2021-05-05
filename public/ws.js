@@ -16,6 +16,7 @@ ws.addEventListener('message', (buffer) => {
     const msg = msgpack.decode(new Uint8Array(buffer.data))
 
     if (msg.state == 0) {
+        console.log(msg.players)
         clientId = msg.clientId
         players = msg.players
         interval = msg.interval

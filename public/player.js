@@ -4,6 +4,7 @@ class Player {
         this.y = player.y
         this.size = player.size
         this.speed = player.speed
+        this.currentSpeed = player.currentSpeed
         this.color = player.color
         this.playing = player.playing
         this.alive = player.alive
@@ -17,10 +18,12 @@ class Player {
     }
 
     move(input, area, enemies, players, ctx) {
-        if (input.left) this.x -= this.speed
-        if (input.right) this.x += this.speed
-        if (input.up) this.y -= this.speed
-        if (input.down) this.y += this.speed
+        if (input.shift && this.alive) this.currentSpeed = this.speed / 2
+        else if (this.alive) this.currentSpeed = this.speed
+        if (input.left) this.x -= this.currentSpeed
+        if (input.right) this.x += this.currentSpeed
+        if (input.up) this.y -= this.currentSpeed
+        if (input.down) this.y += this.currentSpeed
         this.border(area)
         this.collision(enemies, players, ctx)
     }
@@ -57,7 +60,7 @@ class Player {
             if (this.playing && (this.x - enemy.x) * (this.x - enemy.x) + (this.y - enemy.y) * (this.y - enemy.y) <= (this.size + enemy.size) * (this.size + enemy.size)) {
                 this.alive = false
                 this.color = 'red'
-                this.speed = 0
+                this.currentSpeed = 0
             }
         }
 
@@ -65,7 +68,7 @@ class Player {
             if (players[player] != this && (this.x - players[player].x) * (this.x - players[player].x) + (this.y - players[player].y) * (this.y - players[player].y) <= (this.size + players[player].size) * (this.size + players[player].size)) {
                 this.alive = true
                 this.color = 'green'
-                this.speed = 15
+                this.currentSpeed = this.speed
                 this.time = 10
             }
         }

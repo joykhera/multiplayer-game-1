@@ -10,7 +10,6 @@ let score = 0
 
 setInterval(() => {
     if (players[clientId].playing && players[clientId].alive) score++
-    // if (!players[clientId].alive) players[clientId].time--
     if (players[clientId].time <= 0) location.reload()
 }, 1000)
 
@@ -36,7 +35,6 @@ MainLoop.setUpdate(() => {
         ctx.fillText(`Score: ${score}`, canvas.width / 2, 50)
 
         if (Object.values(players).find(player => player.alive == false)) {
-            console.log('a')
             ctx.fillStyle = 'red'
             ctx.font = "20px Arial";
             ctx.textAlign = "center";

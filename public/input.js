@@ -12,6 +12,7 @@ function handler(key = '', down_or_up) {
         .replace("keys", "down")
         .replace("keyw", "up")
         .replace("keya", "left")
+        .replace("keyd", "right")
         .replace("shiftright", "shift")
         .replace("shiftleft", "shift")
 

@@ -59,7 +59,6 @@ class Player {
                 this.alive = false
                 this.color = 'red'
                 this.currentSpeed = 0
-                console.log(this.currentSpeed)
             }
         }
 

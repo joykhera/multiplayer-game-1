@@ -13,6 +13,7 @@ const inputs = {}
 const enemies = []
 
 ws.addEventListener('message', (buffer) => {
+    console.log(buffer.data.byteLength)
     const msg = msgpack.decode(new Uint8Array(buffer.data))
 
     if (msg.state == 0) {

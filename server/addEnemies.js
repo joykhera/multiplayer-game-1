@@ -10,6 +10,7 @@ let enemiesAdded = 0
 let playing = false
 let intervalSet = false
 let interval
+let intervalTime = 3000
 
 function addEnemies(players) {
     playing = false
@@ -22,9 +23,10 @@ function addEnemies(players) {
             for (const client in clients) clients[client].ws.send(msgpack.encode({ newEnemy, state: 4 }))
 
             size++
-            speed += 0.25
+            speed += 0.1
             enemiesAdded++
-        }, 5000)
+            intervalTime += 100
+        }, intervalTime)
         intervalSet = true
     }
 
@@ -32,6 +34,7 @@ function addEnemies(players) {
         enemies.splice(enemyNum, enemiesAdded)
         size = 15
         speed = 5
+        intervalTime = 3000
         clearInterval(interval)
         intervalSet = false
         for (const client in clients) clients[client].ws.send(msgpack.encode({ enemyNum, enemiesAdded, state: 5 }))

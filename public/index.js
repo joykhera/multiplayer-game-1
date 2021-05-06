@@ -43,12 +43,14 @@ MainLoop.setUpdate(() => {
             ctx.fillText(`Someone is dead`, canvas.width / 2, 100)
 
             for (const player of deadPlayers) {
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = 'red'
-                ctx.beginPath();
-                ctx.moveTo(players[clientId].x, players[clientId].y);
-                ctx.lineTo(player.x, player.y);
-                ctx.stroke();
+                if (player != players[clientId]) {
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = 'red'
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width / 2, canvas.height / 2);
+                    ctx.lineTo(player.x - players[clientId].x + canvas.width / 2, player.y - players[clientId].y + canvas.height / 2);
+                    ctx.stroke();
+                }
             }
         }
 

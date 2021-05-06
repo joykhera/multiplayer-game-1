@@ -1,12 +1,12 @@
 export default class Enemy {
     constructor(size, speed, area) {
-        this.size = size
-        this.x = area.x + area.size / 2
-        this.y = area.y + area.size / 2
+        this.size = this.prevSize = size
+        this.x = this.prevX = area.x + area.size / 2
+        this.y = this.prevY = area.y + area.size / 2
         let angle = Math.random() * Math.PI * 2
-        this.velX = Math.cos(angle) * speed;
-        this.velY = Math.sin(angle) * speed;
-        this.playing = false
+        this.velX = this.prevVelX = Math.cos(angle) * speed;
+        this.velY = this.prevVelY = Math.sin(angle) * speed;
+        this.playing = this.prevPlaying = false
     }
 
     move(area) {
@@ -35,14 +35,21 @@ export default class Enemy {
         }
     }
 
-    getState() {
-        return {
-            x: this.x,
-            y: this.y,
-            size: this.size,
-            velX: this.velX,
-            velY: this.velY,
-            playing: this.playing
-        }
+    getChanges() {
+        const changes = {}
+        if (this.x != this.prevX) changes.x = this.x
+        if (this.y != this.prevY) changes.y = this.y
+        if (this.size != this.prevSize) changes.size = this.size
+        if (this.velX != this.prevVelX) changes.velX = this.velX
+        if (this.velY != this.prevVelY) changes.velY = this.velY
+        if (this.playing != this.prevPlaying) changes.playing = this.playing
+
+        this.prevX = this.x
+        this.prevY = this.y
+        this.prevSize = this.size
+        this.prevVelX = this.velX
+        this.prevVelY = this.velY
+        this.prevPlaying = this.playing
+        return changes
     }
 }

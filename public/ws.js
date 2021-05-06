@@ -34,6 +34,7 @@ ws.addEventListener('message', (buffer) => {
     }
 
     else if (msg.state == 2) {
+        console.log(buffer.data)
         serverTick = msg.tick
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
 

@@ -28,8 +28,7 @@ MainLoop.setUpdate(() => {
 setInterval(() => { for (const player in players) if (!players[player].alive) players[player].time-- }, 1000)
 
 setInterval(() => {
-    for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemies.map(enemy => enemy.getState()), state: 2 }))
-    // for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies, state: 2 }))
+    for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemies.map(enemy => enemy.getChanges()), state: 2 }))
     tick++
 }, interval)
 

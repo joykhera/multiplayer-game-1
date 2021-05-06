@@ -34,11 +34,22 @@ MainLoop.setUpdate(() => {
         ctx.textAlign = "center";
         ctx.fillText(`Score: ${score}`, canvas.width / 2, 50)
 
-        if (Object.values(players).find(player => player.alive == false)) {
+        const deadPlayers = Object.values(players).filter(player => player.alive == false)
+
+        if (deadPlayers.length) {
             ctx.fillStyle = 'red'
             ctx.font = "20px Arial";
             ctx.textAlign = "center";
             ctx.fillText(`Someone is dead`, canvas.width / 2, 100)
+
+            for (const player of deadPlayers) {
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = 'red'
+                ctx.beginPath();
+                ctx.moveTo(players[clientId].x, players[clientId].y);
+                ctx.lineTo(player.x, player.y);
+                ctx.stroke();
+            }
         }
 
         ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))

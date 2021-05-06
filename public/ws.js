@@ -13,7 +13,6 @@ const inputs = {}
 const enemies = []
 
 ws.addEventListener('message', (buffer) => {
-    console.log(buffer.data.byteLength)
     const msg = msgpack.decode(new Uint8Array(buffer.data))
 
     if (msg.state == 0) {
@@ -36,7 +35,6 @@ ws.addEventListener('message', (buffer) => {
 
     else if (msg.state == 2) {
         serverTick = msg.tick
-
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
 
         for (const player in msg.players) {

@@ -30,6 +30,8 @@ function addEnemies(players) {
 
     else if (!playing && enemies.length != enemyNum) {
         enemies.splice(enemyNum, enemiesAdded)
+        size = 15
+        speed = 5
         clearInterval(interval)
         intervalSet = false
         for (const client in clients) clients[client].ws.send(msgpack.encode({ enemyNum, enemiesAdded, state: 5 }))

@@ -18,31 +18,23 @@ setInterval(() => {
 
 
 function update() {
-    if (onTab && players[clientId]) {
+    if (onTab) {
+        ctx.fillStyle = 'black'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        area.draw(ctx, players[clientId])
         inputs[tick] = Object.assign({}, input)
-        for (const enemy of enemies) enemy.move(area)
+        for (const enemy of enemies) enemy.update(area, players[clientId], ctx)
         // bounce(enemies)
         for (const player in players) {
-            if (player == clientId) players[player].update(inputs[tick], area, enemies, players)
-            else players[player].move(serverTick, interval)
+            if (player == clientId) players[player].update(inputs[tick], area, enemies, players, ctx)
+            else players[player].update(serverTick, interval, mainPlayer, ctx)
         }
-
+        drawScore(score, ctx)
+        drawDeath(players, ctx)
         ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
-
         tick++
-        draw()
     }
     requestAnimationFrame(update)
-}
-
-function draw() {
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    area.draw(ctx, players[clientId])
-    for (const enemy of enemies) enemy.draw(players[clientId], ctx)
-    for (const player in players) players[player].draw(ctx, players[clientId])
-    drawScore(score, ctx)
-    drawDeath(players, clientId, ctx)
 }
 
 document.addEventListener("visibilitychange", event => {
@@ -50,5 +42,4 @@ document.addEventListener("visibilitychange", event => {
     else onTab = false
 })
 
-setInterval(() => { console.log(tick) }, 1000)
 export { ctx, update }

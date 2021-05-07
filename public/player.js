@@ -11,19 +11,20 @@ class Player {
         this.time = player.time
     }
 
-    update(input, area, enemies, players) {
-        this.move(input)
-        this.border(area)
-        this.collision(enemies, players)
+    update(input, area, enemies, players, ctx) {
+        this.move(input, area, enemies, players)
+        this.draw(ctx)
     }
 
-    move(input) {
+    move(input, area, enemies, players) {
         if (input.shift && this.alive) this.currentSpeed = this.speed / 2
         else if (this.alive) this.currentSpeed = this.speed
         if (input.left) this.x -= this.currentSpeed
         if (input.right) this.x += this.currentSpeed
         if (input.up) this.y -= this.currentSpeed
         if (input.down) this.y += this.currentSpeed
+        this.border(area)
+        this.collision(enemies, players)
     }
 
     border(area) {

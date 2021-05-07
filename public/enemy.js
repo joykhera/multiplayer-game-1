@@ -9,6 +9,11 @@ export default class Enemy {
         this.playing = enemy.playing
     }
 
+    update(area, mainPlayer, ctx) {
+        this.move(area)
+        this.draw(mainPlayer, ctx)
+    }
+
     move(area) {
         this.x += this.velX
         this.y += this.velY
@@ -35,10 +40,10 @@ export default class Enemy {
         }
     }
 
-    draw(player, ctx) {
+    draw(mainPlayer, ctx) {
         ctx.beginPath();
         ctx.fillStyle = this.color
-        ctx.arc(this.x - player.x + canvas.width / 2, this.y - player.y + canvas.height / 2, this.size, 0, Math.PI * 2);
+        ctx.arc(this.x - mainPlayer.x + canvas.width / 2, this.y - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }

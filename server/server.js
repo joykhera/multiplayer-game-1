@@ -29,7 +29,6 @@ setInterval(() => { for (const player in players) if (!players[player].alive) pl
 
 setInterval(() => {
     const enemyChanges = enemies.map(enemy => enemy.getChanges())
-    // if (clients[1]) console.log(clients[1].tick, enemyChanges[0])
     for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemyChanges, state: 2 }))
     tick++
 }, interval)

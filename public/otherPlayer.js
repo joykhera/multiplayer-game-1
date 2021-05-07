@@ -20,6 +20,11 @@ export default class OtherPlayer {
         this.currentTick = 0
     }
 
+    update(tick, interval, ctx, mainPlayer) {
+        this.move(tick, interval)
+        this.draw(mainPlayer, ctx)
+    }
+
     move(tick, interval) {
         if (this.currentTick !== tick) {
             this.lerpTime = 0
@@ -31,7 +36,7 @@ export default class OtherPlayer {
         this.curY = lerp(this.prevY, this.y, this.lerpTime)
     }
 
-    draw(ctx, mainPlayer) {
+    draw(mainPlayer, ctx) {
         ctx.beginPath();
         ctx.arc(this.curX - mainPlayer.x + canvas.width / 2, this.curY - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color

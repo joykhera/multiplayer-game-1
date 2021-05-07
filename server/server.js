@@ -21,14 +21,15 @@ let interval = 50
 
 MainLoop.setUpdate(() => {
     for (const enemy of enemies) enemy.move(area)
-    bounce(enemies)
+    // bounce(enemies)
     addEnemies(players)
 }).start()
 
 setInterval(() => { for (const player in players) if (!players[player].alive) players[player].time-- }, 1000)
 
 setInterval(() => {
-    for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemies.map(enemy => enemy.getChanges()), state: 2 }))
+    const enemyChanges = enemies.map(enemy => enemy.getChanges())
+    for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemyChanges, state: 2 }))
     tick++
 }, interval)
 

@@ -9,23 +9,21 @@ class Player {
         this.playing = player.playing
         this.alive = player.alive
         this.time = player.time
-        // this.name = prompt("Please enter a username")
     }
 
-    update(input, area, enemies, players, ctx) {
-        this.move(input, area, enemies, players, ctx)
-        this.draw(ctx)
+    update(input, area, enemies, players) {
+        this.move(input)
+        this.border(area)
+        this.collision(enemies, players)
     }
 
-    move(input, area, enemies, players, ctx) {
+    move(input) {
         if (input.shift && this.alive) this.currentSpeed = this.speed / 2
         else if (this.alive) this.currentSpeed = this.speed
         if (input.left) this.x -= this.currentSpeed
         if (input.right) this.x += this.currentSpeed
         if (input.up) this.y -= this.currentSpeed
         if (input.down) this.y += this.currentSpeed
-        this.border(area)
-        this.collision(enemies, players, ctx)
     }
 
     border(area) {
@@ -55,7 +53,7 @@ class Player {
         }
     }
 
-    collision(enemies, players, ctx) {
+    collision(enemies, players) {
         for (const enemy of enemies) {
             if (this.playing && (this.x - enemy.x) * (this.x - enemy.x) + (this.y - enemy.y) * (this.y - enemy.y) <= (this.size + enemy.size) * (this.size + enemy.size)) {
                 this.alive = false
@@ -72,13 +70,6 @@ class Player {
                 this.time = 10
             }
         }
-
-        if (!this.alive) {
-            ctx.font = "20px Arial";
-            ctx.fillStyle = 'red'
-            ctx.textAlign = "center";
-            ctx.fillText(`${this.time}`, canvas.width / 2, canvas.height / 2 - this.size - 10)
-        }
     }
 
     draw(ctx) {
@@ -88,9 +79,12 @@ class Player {
         ctx.fill();
         ctx.closePath();
 
-        // ctx.font = "20px Arial";
-        // ctx.textAlign = "center";
-        // ctx.fillText(`${this.name}`, canvas.width / 2, canvas.height / 2 - this.size - 10)
+        if (!this.alive) {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = 'red'
+            ctx.textAlign = "center";
+            ctx.fillText(`${this.time}`, canvas.width / 2, canvas.height / 2 - this.size - 10)
+        }
     }
 }
 

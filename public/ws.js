@@ -2,7 +2,7 @@ import Player from './player.js'
 import OtherPlayer from './otherPlayer.js'
 import Area from './area.js'
 import Enemy from './enemy.js'
-import ctx from './index.js'
+import { ctx, update, draw } from './index.js'
 import bounce from './bounce.js'
 
 const ws = new WebSocket(`${(location.protocol == 'http:') ? 'ws' : 'wss'}://${location.host}`)
@@ -16,7 +16,7 @@ ws.addEventListener('message', (buffer) => {
     const msg = msgpack.decode(new Uint8Array(buffer.data))
 
     if (msg.state == 0) {
-        console.log(msg.players)
+        // console.log(msg.players)
         clientId = msg.clientId
         players = msg.players
         interval = msg.interval
@@ -27,6 +27,7 @@ ws.addEventListener('message', (buffer) => {
             if (player == clientId) players[player] = new Player(players[player])
             else players[player] = new OtherPlayer(players[player])
         }
+        MainLoop.setUpdate(update).setDraw(draw).start();
     }
 
     else if (msg.state == 1) {
@@ -34,10 +35,10 @@ ws.addEventListener('message', (buffer) => {
     }
 
     else if (msg.state == 2) {
-        console.log(buffer.data)
+        // console.log(buffer.data)
+        console.log(msg.tick, msg.enemies[0])
         serverTick = msg.tick
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
-
         for (const player in msg.players) {
             if (player != clientId) {
                 players[player].prevX = players[player].x
@@ -45,11 +46,11 @@ ws.addEventListener('message', (buffer) => {
             }
             Object.assign(players[player], msg.players[player])
         }
-
+        // console.log(tick)
         if (tick > msg.clientTick + 1) for (let i = msg.clientTick + 1; i < tick; i++) {
             players[clientId].move(inputs[i], area, enemies, players, ctx)
             for (const enemy of enemies) enemy.move(area)
-            bounce(enemies)
+            // bounce(enemies)
         }
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
     }

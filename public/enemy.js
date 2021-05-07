@@ -9,11 +9,6 @@ export default class Enemy {
         this.playing = enemy.playing
     }
 
-    update(area, player, ctx) {
-        this.move(area)
-        this.draw(player, ctx)
-    }
-
     move(area) {
         this.x += this.velX
         this.y += this.velY

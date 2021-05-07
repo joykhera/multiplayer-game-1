@@ -20,7 +20,7 @@ export default class OtherPlayer {
         this.currentTick = 0
     }
 
-    update(tick, interval, ctx, mainPlayer) {
+    update(tick, interval, mainPlayer, ctx) {
         this.move(tick, interval)
         this.draw(mainPlayer, ctx)
     }

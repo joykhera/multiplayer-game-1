@@ -9,7 +9,6 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext("2d")
 window.tick = 0
 let score = 0
-let onTab = true
 
 setInterval(() => {
     if (players[clientId].playing && players[clientId].alive) score++
@@ -18,7 +17,7 @@ setInterval(() => {
 
 
 function update() {
-    if (onTab) {
+    if (document.visibilityState == "visible") {
         ctx.fillStyle = 'black'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
         area.draw(ctx, players[clientId])
@@ -27,7 +26,7 @@ function update() {
         // bounce(enemies)
         for (const player in players) {
             if (player == clientId) players[player].update(inputs[tick], area, enemies, players, ctx)
-            else players[player].update(serverTick, interval, mainPlayer, ctx)
+            else players[player].update(serverTick, interval, players[clientId], ctx)
         }
         drawScore(score, ctx)
         drawDeath(players, ctx)
@@ -36,10 +35,5 @@ function update() {
     }
     requestAnimationFrame(update)
 }
-
-document.addEventListener("visibilitychange", event => {
-    if (document.visibilityState == "visible") onTab = true
-    else onTab = false
-})
 
 export { ctx, update }

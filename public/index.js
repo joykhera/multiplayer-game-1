@@ -9,7 +9,8 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext("2d")
 window.tick = 0
 let score = 0
-let prevTime = Date.now()
+let onTab = true
+
 setInterval(() => {
     if (players[clientId].playing && players[clientId].alive) score++
     if (players[clientId].time <= 0) location.reload()
@@ -17,23 +18,21 @@ setInterval(() => {
 
 
 function update() {
-    // if (Date.now() - prevTime > 100) console.log(Date.now() - prevTime)
-    // if (Date.now() - prevTime < 100) {
-    inputs[tick] = Object.assign({}, input)
-    for (const enemy of enemies) enemy.move(area)
-    // bounce(enemies)
+    if (onTab && players[clientId]) {
+        inputs[tick] = Object.assign({}, input)
+        for (const enemy of enemies) enemy.move(area)
+        // bounce(enemies)
+        for (const player in players) {
+            if (player == clientId) players[player].update(inputs[tick], area, enemies, players)
+            else players[player].move(serverTick, interval)
+        }
 
-    for (const player in players) {
-        if (player == clientId) players[player].update(inputs[tick], area, enemies, players)
-        else players[player].move(serverTick, interval)
+        ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
+
+        tick++
+        draw()
     }
-
-    ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
-
-    tick++
-    // }
-    prevTime = Date.now()
-    // console.log(tick)
+    requestAnimationFrame(update)
 }
 
 function draw() {
@@ -46,4 +45,10 @@ function draw() {
     drawDeath(players, clientId, ctx)
 }
 
-export { ctx, update, draw }
+document.addEventListener("visibilitychange", event => {
+    if (document.visibilityState == "visible") onTab = true
+    else onTab = false
+})
+
+setInterval(() => { console.log(tick) }, 1000)
+export { ctx, update }

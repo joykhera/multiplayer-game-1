@@ -12,6 +12,8 @@ const port = process.env.PORT || 3000
 const __dirname = path.resolve();
 expressWs(app)
 wsHandler(app)
+// app.use(express.static("public"));
+// app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
 app.use(express.static('../public'))
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')))
 app.ws.binaryType = "arraybuffer"
@@ -22,7 +24,8 @@ let interval = 50
 MainLoop.setUpdate(() => {
     for (const enemy of game.enemies) enemy.move(area)
     // bounce(enemies)
-    game.addEnemies(players.values(), clients.values(), area)
+    // console.log(clients.values())
+    game.addEnemies(players.values(), clients, area)
 }).start()
 
 setInterval(() => { for (const player of players.values()) if (!player.alive && player.time >= 0) player.time--; }, 1000)

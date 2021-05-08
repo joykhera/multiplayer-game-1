@@ -13,15 +13,14 @@ const game = {
     intervalTime: 3000,
 
     addEnemies(players, clients, area) {
-        // console.log(players)
         this.playing = false
         for (const player of players) if (player.playing) this.playing = true
-
         if (this.playing && !this.intervalSet) {
             this.interval = setInterval(() => {
                 const newEnemy = new Enemy(Math.random() * this.size + 5, Math.random() * this.speed + 1, area)
                 this.enemies.push(newEnemy)
-                for (const client of clients) client.ws.send(msgpack.encode({ newEnemy, state: 4 }))
+                console.log(clients)
+                for (const client of clients.values()) client.ws.send(msgpack.encode({ newEnemy, state: 4 }))
 
                 this.size++
                 this.speed += 0.1
@@ -38,7 +37,7 @@ const game = {
             this.intervalTime = 3000
             clearInterval(this.interval)
             this.intervalSet = false
-            for (const client of clients) client.ws.send(msgpack.encode({ enemyNum: this.enemyNum, enemiesAdded: this.enemiesAdded, state: 5 }))
+            for (const client of clients.values()) client.ws.send(msgpack.encode({ enemyNum: this.enemyNum, enemiesAdded: this.enemiesAdded, state: 5 }))
         }
     }
 }

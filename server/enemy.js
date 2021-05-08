@@ -1,12 +1,12 @@
 export default class Enemy {
     constructor(size, speed, area) {
-        this.size = this.prevSize = size
-        this.x = this.prevX = area.x + area.size / 2
-        this.y = this.prevY = area.y + area.size / 2
+        this.size = this.prevsize = size
+        this.x = this.prevx = area.x + area.size / 2
+        this.y = this.prevy = area.y + area.size / 2
         let angle = Math.random() * Math.PI * 2
-        this.velX = this.prevVelX = Math.cos(angle) * speed;
-        this.velY = this.prevVelY = Math.sin(angle) * speed;
-        this.playing = this.prevPlaying = false
+        this.velX = this.prevvelX = Math.cos(angle) * speed;
+        this.velY = this.prevvelY = Math.sin(angle) * speed;
+        this.playing = this.prevplaying = false
     }
 
     move(area) {
@@ -37,19 +37,12 @@ export default class Enemy {
 
     getChanges() {
         const changes = {}
-        if (this.x != this.prevX) changes.x = this.x
-        if (this.y != this.prevY) changes.y = this.y
-        if (this.size != this.prevSize) changes.size = this.size
-        if (this.velX != this.prevVelX) changes.velX = this.velX
-        if (this.velY != this.prevVelY) changes.velY = this.velY
-        if (this.playing != this.prevPlaying) changes.playing = this.playing
-
-        this.prevX = this.x
-        this.prevY = this.y
-        this.prevSize = this.size
-        this.prevVelX = this.velX
-        this.prevVelY = this.velY
-        this.prevPlaying = this.playing
+        for (const property in this) {
+            if (!property.includes('prev')) {
+                if (this[property] != this[`prev${property}`]) changes[property] = this[property]
+                this[`prev${property}`] = this[property]
+            }
+        }
         return changes
     }
 }

@@ -1,14 +1,14 @@
 class Player {
     constructor(canvas) {
-        this.x = canvas.width / 2
-        this.y = canvas.height / 2
-        this.size = 20
-        this.speed = 15
-        this.currentSpeed = this.speed
-        this.color = 'green'
-        this.playing = false
-        this.alive = true
-        this.time = 10
+        this.x = this.prevx = canvas.width / 2
+        this.y = this.prevy = canvas.height / 2
+        this.size = this.prevsize = 20
+        this.speed = this.prevspeed = 15
+        this.currentSpeed = this.prevcurrentSpeed = this.speed
+        this.color = this.prevcolor = 'green'
+        this.playing = this.prevplaying = false
+        this.alive = this.prevalive = true
+        this.time = this.prevtime = 10
     }
 
     update(input, area, enemies, players) {
@@ -62,8 +62,8 @@ class Player {
             }
         }
 
-        for (const player in players) {
-            if (players[player] != this && (this.x - players[player].x) * (this.x - players[player].x) + (this.y - players[player].y) * (this.y - players[player].y) <= (this.size + players[player].size) * (this.size + players[player].size)) {
+        for (const player of players) {
+            if (player != this && (this.x - player.x) * (this.x - player.x) + (this.y - player.y) * (this.y - player.y) <= (this.size + player.size) * (this.size + player.size)) {
                 this.alive = true
                 this.color = 'green'
                 this.currentSpeed = this.speed
@@ -72,18 +72,15 @@ class Player {
         }
     }
 
-    getState() {
-        return {
-            x: this.x,
-            y: this.y,
-            size: this.size,
-            speed: this.speed,
-            currentSpeed: this.currentSpeed,
-            color: this.color,
-            playing: this.playing,
-            alive: this.alive,
-            time: this.time
+    getChanges() {
+        const changes = {}
+        for (const property in this) {
+            if (!property.includes('prev')) {
+                if (this[property] != this[`prev${property}`]) changes[property] = this[property]
+                this[`prev${property}`] = this[property]
+            }
         }
+        return changes
     }
 }
 

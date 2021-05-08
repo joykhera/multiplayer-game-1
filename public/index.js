@@ -11,28 +11,27 @@ window.tick = 0
 let score = 0
 
 setInterval(() => {
-    if (players[clientId].playing && players[clientId].alive) score++
-    if (players[clientId].time <= 0) location.reload()
+    if (players.get(clientId).playing && players.get(clientId).alive) score++
+    else if (!players.get(clientId).alive) players.get(clientId).time--
+    if (players.get(clientId).time <= 0) location.reload()
 }, 1000)
 
 
 function update() {
-    if (document.visibilityState == "visible") {
-        ctx.fillStyle = 'black'
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        area.draw(ctx, players[clientId])
-        inputs[tick] = Object.assign({}, input)
-        for (const enemy of enemies) enemy.update(area, players[clientId], ctx)
-        // bounce(enemies)
-        for (const player in players) {
-            if (player == clientId) players[player].update(inputs[tick], area, enemies, players, ctx)
-            else players[player].update(serverTick, interval, players[clientId], ctx)
-        }
-        drawScore(score, ctx)
-        drawDeath(players, ctx)
-        ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
-        tick++
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    area.draw(ctx, players.get(clientId))
+    inputs[tick] = Object.assign({}, input)
+    for (const enemy of enemies) enemy.update(area, players.get(clientId), ctx)
+    // bounce(enemies)
+    for (const [id, player] of players) {
+        if (id == clientId) player.update(inputs[tick], area, enemies, players.values(), ctx)
+        else player.update(serverTick, interval, players.get(clientId), ctx)
     }
+    drawScore(score, ctx)
+    drawDeath(players.values(), ctx)
+    ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
+    tick++
     requestAnimationFrame(update)
 }
 

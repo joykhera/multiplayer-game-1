@@ -2,7 +2,7 @@ import express from 'express'
 import expressWs from 'express-ws'
 import msgpack from 'msgpack-lite'
 import MainLoop from 'mainloop.js'
-import { wsHandler, players, clients, area } from './ws.js'
+import { wsHandler, clients, players, area } from './ws.js'
 import game from './game.js'
 import bounce from './bounce.js'
 import path from 'path'
@@ -22,14 +22,16 @@ let interval = 50
 MainLoop.setUpdate(() => {
     for (const enemy of game.enemies) enemy.move(area)
     // bounce(enemies)
-    game.addEnemies(players, clients, area)
+    game.addEnemies(players.values(), clients.values(), area)
 }).start()
 
-setInterval(() => { for (const player in players) if (!players[player].alive) players[player].time-- }, 1000)
+setInterval(() => { for (const player of players.values()) if (!player.alive && player.time >= 0) player.time--; }, 1000)
 
 setInterval(() => {
     const enemyChanges = game.enemies.map(enemy => enemy.getChanges())
-    for (const client in clients) clients[client].ws.send(msgpack.encode({ players, tick, clientTick: clients[client].tick, enemies: enemyChanges, state: 2 }))
+    const playerChanges = new Map()
+    for (const [id, player] of players) playerChanges.set(id, player.getChanges())
+    for (const client of clients.values()) client.ws.send(msgpack.encode({ players: Array.from(playerChanges), tick, clientTick: client.tick, enemies: enemyChanges, state: 2 }))
     tick++
 }, interval)
 

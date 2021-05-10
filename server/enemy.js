@@ -9,9 +9,9 @@ export default class Enemy {
         this.playing = this.prevplaying = false
     }
 
-    move(area) {
-        this.x += this.velX
-        this.y += this.velY
+    move(area, deltaTime) {
+        this.x += this.velX * deltaTime / 16
+        this.y += this.velY * deltaTime / 16
 
         if (this.x - this.size < area.x || this.x + this.size > area.x + area.size) this.velX *= -1
         if (this.y - this.size < area.y || this.y + this.size > area.y + area.size) this.velY *= -1

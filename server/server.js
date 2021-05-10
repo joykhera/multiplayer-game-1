@@ -20,11 +20,13 @@ app.ws.binaryType = "arraybuffer"
 app.listen(port, () => console.log(`Server listening at http://localhost:${port}`))
 let tick = 0
 let interval = 50
+let prevTime = Date.now()
 
 MainLoop.setUpdate(() => {
-    for (const enemy of game.enemies) enemy.move(area)
+    for (const enemy of game.enemies) enemy.move(area, Date.now() - prevTime)
     // bounce(enemies)
     game.addEnemies(players.values(), clients, area)
+    prevTime = Date.now()
 }).start()
 
 setInterval(() => { for (const player of players.values()) if (!player.alive && player.time >= 0) player.time--; }, 1000)
@@ -35,6 +37,7 @@ setInterval(() => {
     for (const [id, player] of players) playerChanges.set(id, player.getChanges())
     for (const client of clients.values()) client.ws.send(msgpack.encode({ players: Array.from(playerChanges), tick, clientTick: client.tick, enemies: enemyChanges, state: 2 }))
     tick++
+    if (clients.get(1)) console.log(clients.get(1).tick, game.enemies[0].x, game.enemies[0].y)
 }, interval)
 
 export default interval

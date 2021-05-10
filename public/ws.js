@@ -25,7 +25,7 @@ ws.addEventListener('message', (buffer) => {
             else players.set(id, new OtherPlayer(player))
         }
         mainPlayer = players.get(clientId)
-        update()
+        MainLoop.setUpdate(update).start()
     }
 
     else if (msg.state == 1) {
@@ -48,7 +48,7 @@ ws.addEventListener('message', (buffer) => {
         }
         if (tick > msg.clientTick) for (let i = msg.clientTick; i < tick; i++) {
             mainPlayer.move(inputs[i + 1], area, enemies, players.values())
-            for (const enemy of enemies) enemy.move(area)
+            for (const enemy of enemies) enemy.move(area, 16.67)
             // bounce(enemies)
         }
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]

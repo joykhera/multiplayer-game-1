@@ -34,8 +34,10 @@ ws.addEventListener('message', (buffer) => {
 
     else if (msg.state == 2) {
         // console.log(buffer.data)
+        const prevPlayer = Object.assign({}, players.get(clientId))
         serverTick = msg.tick
         const msgPlayers = new Map(msg.players)
+
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
         for (const [id, player] of msgPlayers) {
             if (id != clientId) {
@@ -44,13 +46,14 @@ ws.addEventListener('message', (buffer) => {
             }
             Object.assign(players.get(id), player)
         }
-
-        if (tick > msg.clientTick + 1) for (let i = msg.clientTick + 1; i < tick; i++) {
-            players.get(clientId).move(inputs[i], area, enemies, players.values(), ctx)
+        if (tick > msg.clientTick) for (let i = msg.clientTick; i < tick; i++) {
+            const prevPlayer = Object.assign({}, players.get(clientId))
+            players.get(clientId).move(inputs[i + 1], area, enemies, players.values(), ctx)
             for (const enemy of enemies) enemy.move(area)
             // bounce(enemies)
         }
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
+        if (prevPlayer.x != players.get(clientId).x || prevPlayer.y != players.get(clientId).y) console.log('%c Error ', 'background: #222; color: #bada55', tick, msg.clientTick, prevPlayer, players.get(clientId), inputs)
     }
 
     else if (msg.state == 3) {

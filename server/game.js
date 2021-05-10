@@ -1,6 +1,5 @@
 import Enemy from "./enemy.js"
 import msgpack from 'msgpack-lite'
-
 const game = {
     enemyNum: 5,
     enemies: [],
@@ -19,9 +18,7 @@ const game = {
             this.interval = setInterval(() => {
                 const newEnemy = new Enemy(Math.random() * this.size + 5, Math.random() * this.speed + 1, area)
                 this.enemies.push(newEnemy)
-                console.log(clients)
                 for (const client of clients.values()) client.ws.send(msgpack.encode({ newEnemy, state: 4 }))
-
                 this.size++
                 this.speed += 0.1
                 this.enemiesAdded++

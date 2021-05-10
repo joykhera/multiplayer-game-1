@@ -2,13 +2,12 @@ import Player from './player.js'
 import OtherPlayer from './otherPlayer.js'
 import Area from './area.js'
 import Enemy from './enemy.js'
-import { ctx, update } from './index.js'
+import { update, tick } from './index.js'
 import bounce from './bounce.js'
 
 const ws = new WebSocket(`${(location.protocol == 'http:') ? 'ws' : 'wss'}://${location.host}`)
 ws.binaryType = "arraybuffer"
-let clientId, serverTick, interval, area
-let players
+let clientId, serverTick, interval, area, players, mainPlayer
 const inputs = {}
 const enemies = []
 
@@ -25,6 +24,7 @@ ws.addEventListener('message', (buffer) => {
             if (id == clientId) players.set(id, new Player(player))
             else players.set(id, new OtherPlayer(player))
         }
+        mainPlayer = players.get(clientId)
         update()
     }
 
@@ -34,26 +34,24 @@ ws.addEventListener('message', (buffer) => {
 
     else if (msg.state == 2) {
         // console.log(buffer.data)
-        const prevEnemies = JSON.parse(JSON.stringify(enemies))
         serverTick = msg.tick
         const msgPlayers = new Map(msg.players)
-        console.log(msg.clientTick, enemies[0])
+
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
         for (const [id, player] of msgPlayers) {
+            const currentPlayer = players.get(id)
             if (id != clientId) {
-                players.get(id).prevX = players.get(id).x
-                players.get(id).prevY = players.get(id).y
+                currentPlayer.prevX = currentPlayer.x
+                currentPlayer.prevY = currentPlayer.y
             }
-            Object.assign(players.get(id), player)
+            Object.assign(currentPlayer, player)
         }
         if (tick > msg.clientTick) for (let i = msg.clientTick; i < tick; i++) {
-            players.get(clientId).move(inputs[i + 1], area, enemies, players.values(), ctx)
+            mainPlayer.move(inputs[i + 1], area, enemies, players.values())
             for (const enemy of enemies) enemy.move(area)
             // bounce(enemies)
         }
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
-        // for (let i = 0; i < enemies.length; i++) if (prevEnemies[i].x != enemies[i].x || prevEnemies[i].y != enemies[i].y) console.log('%c Error ', 'background: #222; color: #bada55', prevEnemies[i], enemies[i])
-        if (prevEnemies[0].x != enemies[0].x || prevEnemies[0].y != enemies[0].y) console.log('%c Error ', 'background: #222; color: #bada55', prevEnemies[0], enemies[0])
     }
 
     else if (msg.state == 3) {
@@ -69,4 +67,4 @@ ws.addEventListener('message', (buffer) => {
     }
 })
 
-export { players, ws, serverTick, interval, inputs, clientId, area, enemies }
+export { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer }

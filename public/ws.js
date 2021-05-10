@@ -53,7 +53,6 @@ ws.addEventListener('message', (buffer) => {
             // bounce(enemies)
         }
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
-        if (prevPlayer.x != players.get(clientId).x || prevPlayer.y != players.get(clientId).y) console.log('%c Error ', 'background: #222; color: #bada55', tick, msg.clientTick, prevPlayer, players.get(clientId), inputs)
     }
 
     else if (msg.state == 3) {

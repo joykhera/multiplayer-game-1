@@ -36,7 +36,7 @@ export default class Enemy {
     }
 
     getChanges() {
-        const changes = {}
+        const changes = { x: this.x, y: this.y }
         for (const property in this) {
             if (!property.includes('prev') && property != 'x' && property != 'y') {
                 if (this[property] != this[`prev${property}`]) changes[property] = this[property]

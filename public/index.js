@@ -13,7 +13,7 @@ let score = 0
 setInterval(() => {
     if (players.get(clientId).playing && players.get(clientId).alive) score++
     else if (!players.get(clientId).alive) players.get(clientId).time--
-    // if (players.get(clientId).time <= 0) location.reload()
+    if (players.get(clientId).time <= 0) location.reload()
 }, 1000)
 
 
@@ -31,6 +31,7 @@ function update() {
     }
     drawScore(score, ctx)
     drawDeath(players.values(), ctx)
+    console.log(tick, enemies[0])
     if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
     requestAnimationFrame(update)
 }

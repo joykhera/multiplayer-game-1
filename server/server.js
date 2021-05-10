@@ -24,7 +24,6 @@ let interval = 50
 MainLoop.setUpdate(() => {
     for (const enemy of game.enemies) enemy.move(area)
     // bounce(enemies)
-    // console.log(clients.values())
     game.addEnemies(players.values(), clients, area)
 }).start()
 

@@ -9,6 +9,7 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext("2d")
 let tick = 0
 let score = 0
+window.enemyTick = 0
 let prevTime = Date.now()
 
 setInterval(() => {
@@ -20,6 +21,7 @@ setInterval(() => {
 
 function update() {
     tick++
+    enemyTick++
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     area.draw(ctx, mainPlayer)
@@ -32,7 +34,6 @@ function update() {
     }
     drawScore(score, ctx)
     drawDeath(players.values(), ctx)
-    console.log(tick, enemies[0])
     if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
     prevTime = Date.now()
 }

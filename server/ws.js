@@ -1,7 +1,7 @@
 import msgpack from 'msgpack-lite'
 import Area from './area.js'
 import Player from './player.js'
-import interval from './server.js'
+import { interval, enemyTick } from './server.js'
 import game from './game.js'
 import Enemy from './enemy.js'
 
@@ -21,8 +21,9 @@ function wsHandler(app) {
         players.set(clientId, player)
 
         for (const [id, client] of clients) {
-            if (id == clientId) client.ws.send(msgpack.encode({ players: Array.from(players), clientId, area, interval, enemies: game.enemies, state: 0 }))
+            if (id == clientId) client.ws.send(msgpack.encode({ players: Array.from(players), clientId, area, interval, enemies: game.enemies, enemyTick, state: 0 }))
             else client.ws.send(msgpack.encode({ clientId, player, state: 1 }))
+            console.log('b')
         }
 
         ws.on('message', (buffer) => {

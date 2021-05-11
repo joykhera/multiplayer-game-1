@@ -19,6 +19,7 @@ ws.addEventListener('message', (buffer) => {
         players = new Map(msg.players)
         interval = msg.interval
         area = new Area(msg.area)
+        enemyTick = msg.enemyTick
         for (const enemy of msg.enemies) enemies.push(new Enemy(enemy))
         for (let [id, player] of players) {
             if (id == clientId) players.set(id, new Player(player))
@@ -46,11 +47,9 @@ ws.addEventListener('message', (buffer) => {
             }
             Object.assign(currentPlayer, player)
         }
-        if (tick > msg.clientTick) for (let i = msg.clientTick; i < tick; i++) {
-            mainPlayer.move(inputs[i + 1], area, enemies, players.values())
-            for (const enemy of enemies) enemy.move(area, 16.67)
-            // bounce(enemies)
-        }
+        for (let i = msg.clientTick; i < tick; i++) mainPlayer.move(inputs[i + 1], area, enemies, players.values())
+        for (let i = msg.enemyTick; i < enemyTick; i++) for (const enemy of enemies) enemy.update(area, mainPlayer, 16.67, ctx)
+        if (enemies[1].x != msg.enemies[1].x || enemies[1].x != msg.enemies[1].x) console.log('error')
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
     }
 

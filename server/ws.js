@@ -23,11 +23,11 @@ function wsHandler(app) {
         for (const [id, client] of clients) {
             if (id == clientId) client.ws.send(msgpack.encode({ players: Array.from(players), clientId, area, interval, enemies: game.enemies, enemyTick, state: 0 }))
             else client.ws.send(msgpack.encode({ clientId, player, state: 1 }))
-            console.log('b')
         }
 
         ws.on('message', (buffer) => {
             const msg = msgpack.decode(buffer)
+            console.log(msg)
             clients.get(msg.clientId).tick = msg.tick
             players.get(msg.clientId).update(msg.input, area, game.enemies, players.values())
         })

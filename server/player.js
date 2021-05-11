@@ -54,11 +54,14 @@ class Player {
     }
 
     collision(enemies, players) {
+        // console.log(this.color)
         for (const enemy of enemies) {
+            // console.log(this.playing)
             if (this.playing && (this.x - enemy.x) * (this.x - enemy.x) + (this.y - enemy.y) * (this.y - enemy.y) <= (this.size + enemy.size) * (this.size + enemy.size)) {
                 this.alive = false
                 this.color = 'red'
                 this.currentSpeed = 0
+                // console.log(this.color)
             }
         }
 
@@ -76,10 +79,12 @@ class Player {
         const changes = { x: this.x, y: this.y }
         for (const property in this) {
             if (!property.includes('prev') && property != 'x' && property != 'y') {
+                // if (property == 'color') console.log(this[property], this[`prev${property}`], this[property] != this[`prev${property}`])
                 if (this[property] != this[`prev${property}`]) changes[property] = this[property]
                 this[`prev${property}`] = this[property]
             }
         }
+        // console.log(changes)
         return changes
     }
 }

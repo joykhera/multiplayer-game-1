@@ -37,7 +37,7 @@ ws.addEventListener('message', (buffer) => {
         // console.log(buffer.data)
         serverTick = msg.tick
         const msgPlayers = new Map(msg.players)
-
+        // console.log(tick, msgPlayers.get(clientId))
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
         for (const [id, player] of msgPlayers) {
             const currentPlayer = players.get(id)
@@ -51,6 +51,7 @@ ws.addEventListener('message', (buffer) => {
         for (let i = msg.enemyTick; i < enemyTick; i++) for (const enemy of enemies) enemy.update(area, mainPlayer, 16.67, ctx)
         if (enemies[1].x != msg.enemies[1].x || enemies[1].x != msg.enemies[1].x) console.log('error')
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
+        if (msgPlayers.get(1)) if (msgPlayers.get(1).color) console.log(msgPlayers.get(1))
     }
 
     else if (msg.state == 3) {

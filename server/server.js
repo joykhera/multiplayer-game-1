@@ -38,6 +38,9 @@ setInterval(() => {
     const playerChanges = new Map()
     for (const [id, player] of players) playerChanges.set(id, player.getChanges())
     for (const client of clients.values()) client.ws.send(msgpack.encode({ players: Array.from(playerChanges), tick, clientTick: client.tick, enemies: enemyChanges, enemyTick, state: 2 }))
+    if (playerChanges.get(1)) if (playerChanges.get(1).color) console.log(clients.get(1).tick, playerChanges.get(1))
+    if (players.get(1)) if (players.get(1).color == 'red') console.log(playerChanges.get(1))
+    // console.log(playerChanges.get(1))
     tick++
 }, interval)
 

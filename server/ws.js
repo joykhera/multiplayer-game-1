@@ -15,7 +15,7 @@ for (let i = 0; i < game.enemyNum; i++) game.enemies.push(new Enemy(15, 5, area)
 function wsHandler(app) {
     app.ws('/', (ws) => {
         clientId++
-        const client = { id: clientId, ws, inputs: new Map(), tick: enemyTick }
+        const client = { id: clientId, ws, tick: 0 }
         const player = new Player(canvas)
         clients.set(clientId, client)
         players.set(clientId, player)
@@ -27,7 +27,8 @@ function wsHandler(app) {
 
         ws.on('message', (buffer) => {
             const msg = msgpack.decode(buffer)
-            clients.get(msg.clientId).inputs.set(msg.tick, msg.input)
+            clients.get(msg.clientId).tick = msg.tick
+            players.get(msg.clientId).update(msg.input, area, game.enemies, players.values())
         })
 
         ws.on('close', () => {

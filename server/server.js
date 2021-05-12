@@ -25,33 +25,20 @@ let prevTime = Date.now()
 
 MainLoop.setUpdate(() => {
     enemyTick++
-    for (const [id, player] of players) {
-        for (let i = clients.get(id).tick; i < enemyTick; i++) {
-            console.log(clients.get(id).tick, enemyTick)
-            // console.log(i, clients.get(id).inputs)
-            if (clients.get(id).inputs.get(i)) {
-                player.update(clients.get(id).inputs.get(i), area, game.enemies, players.values())
-                clients.get(id).tick++
-            }
-            clients.get(id).inputs.delete(i)
-
-            // console.log(clients.get(id).tick, enemyTick)
-        }
-    }
+    for (const player of players.values()) player.collision(game.enemies, players.values())
     for (const enemy of game.enemies) enemy.move(area, Date.now() - prevTime)
     // bounce(enemies)
     game.addEnemies(players.values(), clients, area)
     prevTime = Date.now()
-    // if (players.get(1)) console.log(clients.get(1).tick, players.get(1).x, players.get(1).y)
 }).start()
 
 setInterval(() => { for (const player of players.values()) if (!player.alive && player.time >= 0) player.time--; }, 1000)
 
 setInterval(() => {
     const enemyChanges = game.enemies.map(enemy => enemy.getChanges())
-    const playerChanges = new Map()
-    for (const [id, player] of players) playerChanges.set(id, player.getChanges())
-    for (const client of clients.values()) client.ws.send(msgpack.encode({ players: Array.from(playerChanges), tick, enemies: enemyChanges, enemyTick, clientTick: client.tick, state: 2 }))
+    const playerChanges = []
+    for (const [id, player] of players) playerChanges.push([id, player.getChanges()])
+    for (const client of clients.values()) client.ws.send(msgpack.encode({ players: playerChanges, tick, clientTick: client.tick, enemies: enemyChanges, enemyTick, state: 2 }))
     tick++
 }, interval)
 

@@ -2,12 +2,12 @@ import Player from './player.js'
 import OtherPlayer from './otherPlayer.js'
 import Area from './area.js'
 import Enemy from './enemy.js'
-import { update, tick } from './index.js'
+import { update } from './index.js'
 import bounce from './bounce.js'
 
 const ws = new WebSocket(`${(location.protocol == 'http:') ? 'ws' : 'wss'}://${location.host}`)
 ws.binaryType = "arraybuffer"
-let clientId, serverTick, interval, area, players, mainPlayer
+let clientId, serverTick, interval, area, players, mainPlayer, gameTick, clientTick
 const inputs = {}
 const enemies = []
 
@@ -19,7 +19,11 @@ ws.addEventListener('message', (buffer) => {
         players = new Map(msg.players)
         interval = msg.interval
         area = new Area(msg.area)
-        enemyTick = msg.enemyTick
+        tick = msg.enemyTick
+        // console.log(Date.now() - msg.time)
+        // console.log((Date.now() - msg.time) % 16.67)
+        // tick += Math.floor((Date.now() - msg.time) / 16.67)
+
         for (const enemy of msg.enemies) enemies.push(new Enemy(enemy))
         for (let [id, player] of players) {
             if (id == clientId) players.set(id, new Player(player))
@@ -34,8 +38,15 @@ ws.addEventListener('message', (buffer) => {
     }
 
     else if (msg.state == 2) {
+        // console.log(msg.enemyTick, tick)
+        const prevEnemies = JSON.parse(JSON.stringify(enemies))
+        const prevPlayer = Object.assign({}, mainPlayer)
+        // console.log(players, prevPlayer)
         // console.log(buffer.data)
+
         serverTick = msg.tick
+        gameTick = msg.enemyTick
+        clientTick = msg.clientTick
         const msgPlayers = new Map(msg.players)
         // console.log(tick, msgPlayers.get(clientId))
         for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
@@ -47,11 +58,15 @@ ws.addEventListener('message', (buffer) => {
             }
             Object.assign(currentPlayer, player)
         }
-        for (let i = msg.clientTick; i < tick; i++) mainPlayer.move(inputs[i + 1], area, enemies, players.values())
-        for (let i = msg.enemyTick; i < enemyTick; i++) for (const enemy of enemies) enemy.update(area, mainPlayer, 16.67, ctx)
-        if (enemies[1].x != msg.enemies[1].x || enemies[1].x != msg.enemies[1].x) console.log('error')
+        for (let i = msg.gameTick; i < tick; i++) {
+            for (const enemy of enemies) enemy.move(area, 16.67)
+        }
+        for (let i = msg.clientTick; i < tick; i++) {
+            if (inputs[i + 1]) mainPlayer.move(inputs[i + 1], area, enemies, players.values())
+        }
+        // if (enemies[1].x != prevEnemies[1].x || enemies[1].y != prevEnemies[1].y) console.log('error')
+        if (mainPlayer.x != prevPlayer.x || mainPlayer.y != prevPlayer.y) console.log('error', gameTick, msgPlayers.get(clientId), tick, prevPlayer)
         for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
-        if (msgPlayers.get(1)) if (msgPlayers.get(1).color) console.log(msgPlayers.get(1))
     }
 
     else if (msg.state == 3) {
@@ -67,4 +82,4 @@ ws.addEventListener('message', (buffer) => {
     }
 })
 
-export { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer }
+export { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer, gameTick, clientTick }

@@ -10,7 +10,6 @@ export default class Area {
     }
 
     draw(ctx, player) {
-        // console.log(player)
         ctx.beginPath()
         ctx.fillStyle = this.color
         ctx.fillRect(this.x - player.x + canvas.width / 2, this.y - player.y + canvas.height / 2, this.size, this.size)

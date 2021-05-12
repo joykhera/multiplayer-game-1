@@ -9,7 +9,7 @@ export default class Enemy {
         this.playing = enemy.playing
     }
 
-    update(area, mainPlayer, deltaTime, ctx) {
+    update(area, deltaTime, mainPlayer, ctx) {
         this.move(area, deltaTime)
         this.draw(mainPlayer, ctx)
     }

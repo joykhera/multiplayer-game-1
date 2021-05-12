@@ -1,4 +1,4 @@
-import { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer } from './ws.js'
+import { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer, gameTick } from './ws.js'
 import input from './input.js'
 import bounce from './bounce.js'
 import drawDeath from './drawDeath.js'
@@ -7,26 +7,24 @@ import './scaler.js'
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext("2d")
-let tick = 0
+window.tick = 0
 let score = 0
-window.enemyTick = 0
 let prevTime = Date.now()
 
 setInterval(() => {
     if (mainPlayer.playing && mainPlayer.alive) score++
     else if (!mainPlayer.alive) mainPlayer.time--
-    if (mainPlayer.time <= 0) location.reload()
+    // if (mainPlayer.time <= 0) location.reload()
 }, 1000)
 
 
 function update() {
     tick++
-    enemyTick++
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     area.draw(ctx, mainPlayer)
     inputs[tick] = Object.assign({}, input)
-    for (const enemy of enemies) enemy.update(area, mainPlayer, Date.now() - prevTime, ctx)
+    for (const enemy of enemies) enemy.update(area, Date.now() - prevTime, mainPlayer, ctx)
     // bounce(enemies)
     for (const [id, player] of players) {
         if (id == clientId) player.update(inputs[tick], area, enemies, players.values(), ctx)
@@ -36,12 +34,17 @@ function update() {
     drawDeath(players.values(), ctx)
     if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
     prevTime = Date.now()
+    // console.log(tick, mainPlayer.x, mainPlayer.y)
 }
 
 document.addEventListener("visibilitychange", event => {
-    prevTime = Date.now()
-    if (document.visibilityState == "visible") MainLoop.setUpdate(update).start()
+    if (document.visibilityState == "visible") {
+        MainLoop.setUpdate(update).start()
+        console.log(gameTick)
+        tick = gameTick
+        prevTime = Date.now()
+    }
     else MainLoop.stop()
 })
 
-export { update, tick }
+export { update }

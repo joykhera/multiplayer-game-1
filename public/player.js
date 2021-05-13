@@ -1,3 +1,5 @@
+// import { tick } from './index.js'
+// let prevTick
 class Player {
     constructor(player) {
         this.x = player.x
@@ -17,6 +19,8 @@ class Player {
     }
 
     move(input, area, enemies, players) {
+        // if (prevTick == tick) input = avdkbnvkdnvjkdfnv
+        // prevTick = tick
         if (input.shift && this.alive) this.currentSpeed = this.speed / 2
         else if (this.alive) this.currentSpeed = this.speed
         if (input.left) this.x -= this.currentSpeed
@@ -74,16 +78,16 @@ class Player {
     }
 
     draw(ctx) {
-        ctx.beginPath();
+        ctx.beginPath()
         ctx.fillStyle = this.color
-        ctx.arc(canvas.width / 2, canvas.height / 2, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, this.size, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.closePath()
 
         if (!this.alive) {
-            ctx.font = "20px Arial";
+            ctx.font = "20px Arial"
             ctx.fillStyle = 'red'
-            ctx.textAlign = "center";
+            ctx.textAlign = "center"
             ctx.fillText(`${this.time}`, canvas.width / 2, canvas.height / 2 - this.size - 10)
         }
     }

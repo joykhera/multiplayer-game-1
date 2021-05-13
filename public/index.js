@@ -15,7 +15,7 @@ let prevTime = Date.now()
 setInterval(() => {
     if (mainPlayer.playing && mainPlayer.alive) score++
     else if (!mainPlayer.alive) mainPlayer.time--
-    if (mainPlayer.time <= 0) location.reload()
+    // if (mainPlayer.time <= 0) location.reload()
 }, 1000)
 
 
@@ -36,12 +36,21 @@ function update() {
     drawDeath(players.values(), ctx)
     if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
     prevTime = Date.now()
+    // console.log(enemyTick, enemies[0].x, enemies[0].y)
 }
 
+let timeLeft
 document.addEventListener("visibilitychange", event => {
+    console.log('visibilitychange')
     prevTime = Date.now()
-    if (document.visibilityState == "visible") MainLoop.setUpdate(update).start()
-    else MainLoop.stop()
+    if (document.visibilityState == "visible") {
+        if (timeLeft) enemyTick += Math.floor((Date.now() - timeLeft) / 16.67)
+        MainLoop.setUpdate(update).start()
+    }
+    else {
+        MainLoop.stop()
+        timeLeft = Date.now()
+    }
 })
 
 export { update, tick }

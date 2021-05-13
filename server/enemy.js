@@ -4,8 +4,8 @@ export default class Enemy {
         this.x = this.prevx = area.x + area.size / 2
         this.y = this.prevy = area.y + area.size / 2
         let angle = Math.random() * Math.PI * 2
-        this.velX = this.prevvelX = Math.cos(angle) * speed;
-        this.velY = this.prevvelY = Math.sin(angle) * speed;
+        this.velX = this.prevvelX = Math.cos(angle) * speed
+        this.velY = this.prevvelY = Math.sin(angle) * speed
         this.playing = this.prevplaying = false
     }
 

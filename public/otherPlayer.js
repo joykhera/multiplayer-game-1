@@ -26,7 +26,7 @@ export default class OtherPlayer {
     }
 
     move(tick, interval) {
-        if (this.currentTick !== tick) {
+        if (this.currentTick != tick) {
             this.lerpTime = 0
             this.currentTick = tick
         }
@@ -37,24 +37,24 @@ export default class OtherPlayer {
     }
 
     draw(mainPlayer, ctx) {
-        ctx.beginPath();
-        ctx.arc(this.curX - mainPlayer.x + canvas.width / 2, this.curY - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2);
+        ctx.beginPath()
+        ctx.arc(this.curX - mainPlayer.x + canvas.width / 2, this.curY - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2)
         ctx.fillStyle = this.color
-        ctx.fill();
-        ctx.closePath();
+        ctx.fill()
+        ctx.closePath()
 
         if (!this.alive) {
-            ctx.font = "20px Arial";
+            ctx.font = "20px Arial"
             ctx.fillStyle = 'red'
-            ctx.textAlign = "center";
+            ctx.textAlign = "center"
             ctx.fillText(`${this.time}`, this.curX - mainPlayer.x + canvas.width / 2, this.curY - mainPlayer.y + canvas.height / 2 - this.size - 10)
 
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 5
             ctx.strokeStyle = 'red'
-            ctx.beginPath();
-            ctx.moveTo(canvas.width / 2, canvas.height / 2);
-            ctx.lineTo(this.x - mainPlayer.x + canvas.width / 2, this.y - mainPlayer.y + canvas.height / 2);
-            ctx.stroke();
+            ctx.beginPath()
+            ctx.moveTo(canvas.width / 2, canvas.height / 2)
+            ctx.lineTo(this.x - mainPlayer.x + canvas.width / 2, this.y - mainPlayer.y + canvas.height / 2)
+            ctx.stroke()
         }
         else this.color = 'green'
     }

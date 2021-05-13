@@ -30,6 +30,7 @@ MainLoop.setUpdate(() => {
     // bounce(enemies)
     game.addEnemies(players.values(), clients, area)
     prevTime = Date.now()
+    console.log(enemyTick, game.enemies[0].x, game.enemies[0].y)
 }).start()
 
 setInterval(() => { for (const player of players.values()) if (!player.alive && player.time >= 0) player.time--; }, 1000)

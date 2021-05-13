@@ -41,10 +41,10 @@ export default class Enemy {
     }
 
     draw(mainPlayer, ctx) {
-        ctx.beginPath();
+        ctx.beginPath()
         ctx.fillStyle = this.color
-        ctx.arc(this.x - mainPlayer.x + canvas.width / 2, this.y - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
+        ctx.arc(this.x - mainPlayer.x + canvas.width / 2, this.y - mainPlayer.y + canvas.height / 2, this.size, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.closePath()
     }
 }

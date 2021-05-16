@@ -6,6 +6,7 @@ import drawScore from './drawScore.js'
 import './scaler.js'
 
 const canvas = document.getElementById('canvas'), ctx = canvas.getContext("2d")
+document.body.style.backgroundColor = "black"
 let tick = 0, score = 0, timeLeft
 window.enemyTick = 0
 
@@ -31,7 +32,7 @@ function update() {
 
 document.addEventListener("visibilitychange", event => {
     if (document.visibilityState == "visible") {
-        if (timeLeft) enemyTick += Math.ceil((Date.now() - timeLeft) / 16.67)
+        if (timeLeft) enemyTick += Math.ceil((Date.now() - timeLeft) / 16.666 + 1)
         MainLoop.setUpdate(update).start()
     }
     else {

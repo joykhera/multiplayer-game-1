@@ -19,12 +19,12 @@ ws.addEventListener('message', (buffer) => {
             interval = msg.interval
             area = new Area(msg.area)
             enemyTick = msg.enemyTick
-            const tickDelay = Math.ceil((Date.now() - msg.time) / 16.67) + 1
-            enemyTick += tickDelay
-            console.log(msg.enemyTick, enemyTick)
             for (const enemy of msg.enemies) enemies.push(new Enemy(enemy))
-            for (let i = 0; i < tickDelay; i++) for (const enemy of enemies) enemy.move(area, 16.67)
-            for (let [id, player] of players) id == clientId ? players.set(id, new Player(player)) : players.set(id, new OtherPlayer(player))
+            for (let i = 0; i < Math.ceil((Date.now() - msg.time) / 16.666 + 1); i++) {
+                for (const enemy of enemies) enemy.move(area)
+                enemyTick++
+            }
+            for (const [id, player] of players) id == clientId ? players.set(id, new Player(player)) : players.set(id, new OtherPlayer(player))
             mainPlayer = players.get(clientId)
             MainLoop.setUpdate(update).start()
             break
@@ -35,8 +35,9 @@ ws.addEventListener('message', (buffer) => {
 
         case 2:
             // console.log(buffer.data)
-            const prevPlayer = Object.assign({}, mainPlayer), prevEnemies = JSON.parse(JSON.stringify(enemies)), msgPlayers = new Map(msg.players)
+            console.log(msg.enemyTick, enemyTick)
             serverTick = msg.tick
+            const msgPlayers = new Map(msg.players)
 
             for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
             if (msg.enemyTick > enemyTick) console.log('no assign')
@@ -49,9 +50,7 @@ ws.addEventListener('message', (buffer) => {
                 Object.assign(currentPlayer, player)
             }
             for (let i = msg.clientTick; i < tick; i++) mainPlayer.move(inputs[i + 1], area, enemies, players.values())
-            for (let i = msg.enemyTick; i < enemyTick; i++) {
-                for (const enemy of enemies) enemy.move(area)
-            }
+            for (let i = msg.enemyTick; i < enemyTick; i++) for (const enemy of enemies) enemy.move(area)
             for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
             break
 

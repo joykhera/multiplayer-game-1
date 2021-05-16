@@ -1,7 +1,7 @@
 class Player {
     constructor(canvas) {
-        this.x = this.prevx = canvas.width / 2
-        this.y = this.prevy = canvas.height / 2
+        this.x = canvas.width / 2
+        this.y = canvas.height / 2
         this.size = this.prevsize = 20
         this.speed = this.prevspeed = 15
         this.currentSpeed = this.prevcurrentSpeed = this.speed

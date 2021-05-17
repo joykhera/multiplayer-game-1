@@ -8,7 +8,7 @@ import bounce from './bounce.js'
 const ws = new WebSocket(`${(location.protocol == 'http:') ? 'ws' : 'wss'}://${location.host}`)
 ws.binaryType = "arraybuffer"
 let clientId, serverTick, interval, area, players, mainPlayer
-const inputs = {}, enemies = []
+const inputs = new Map(), enemies = []
 
 ws.addEventListener('message', (buffer) => {
     const msg = msgpack.decode(new Uint8Array(buffer.data))
@@ -49,9 +49,9 @@ ws.addEventListener('message', (buffer) => {
                 }
                 Object.assign(currentPlayer, player)
             }
-            for (let i = msg.clientTick; i < tick; i++) mainPlayer.move(inputs[i + 1], area, enemies, players.values())
+            for (let i = msg.clientTick; i < tick; i++) mainPlayer.move(inputs.get(i + 1), area, enemies, players.values())
             for (let i = msg.enemyTick; i < enemyTick; i++) for (const enemy of enemies) enemy.move(area)
-            for (const tick in inputs) if (tick < msg.clientTick) delete inputs[tick]
+            for (const [tick, input] of inputs) if (tick < msg.clientTick) delete inputs.delete(input)
             break
 
         case 3:

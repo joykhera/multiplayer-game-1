@@ -11,8 +11,8 @@ const app = express(), port = process.env.PORT || 3000, __dirname = path.resolve
 expressWs(app)
 wsHandler(app)
 // app.use(express.static("public"));
-// .get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
-// .listen(port, () => console.log(`Server listening at http://localhost:${port}`))
+// app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
+// app.listen(port, () => console.log(`Server listening at http://localhost:${port}`))
 app.use(express.static('../public'))
     .get('/', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')))
     .listen(port, () => console.log(`Server listening at http://localhost:${port}`))

@@ -22,12 +22,12 @@ function update() {
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     area.draw(ctx, mainPlayer)
-    inputs[tick] = Object.assign({}, input)
+    inputs.set(tick, Object.assign({}, input))
     for (const enemy of enemies) enemy.update(area, mainPlayer, ctx)
-    for (const [id, player] of players) id == clientId ? player.update(inputs[tick], area, enemies, players.values(), ctx) : player.update(serverTick, interval, mainPlayer, ctx)
+    for (const [id, player] of players) id == clientId ? player.update(inputs.get(tick), area, enemies, players.values(), ctx) : player.update(serverTick, interval, mainPlayer, ctx)
     drawScore(score, ctx)
     drawDeath(players.values(), ctx)
-    if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs[tick] }))
+    if (ws.readyState == 1) ws.send(msgpack.encode({ clientId, tick, input: inputs.get(tick) }))
 }
 
 document.addEventListener("visibilitychange", event => {

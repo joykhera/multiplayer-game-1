@@ -32,7 +32,7 @@ function update() {
 
 document.addEventListener("visibilitychange", event => {
     if (document.visibilityState == "visible") {
-        if (timeLeft) enemyTick += Math.ceil((Date.now() - timeLeft) / 16.666 + 1)
+        if (timeLeft) enemyTick += Math.ceil((timeLeft - Date.now()) / 16.667)
         MainLoop.setUpdate(update).start()
     }
     else {

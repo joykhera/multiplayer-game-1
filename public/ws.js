@@ -20,7 +20,7 @@ ws.addEventListener('message', (buffer) => {
             area = new Area(msg.area)
             enemyTick = msg.enemyTick
             for (const enemy of msg.enemies) enemies.push(new Enemy(enemy))
-            for (let i = 0; i < Math.ceil((Date.now() - msg.time) / 16.666 + 1); i++) {
+            for (let i = 0; i < Math.ceil((msg.time - Date.now()) / 16.667); i++) {
                 for (const enemy of enemies) enemy.move(area)
                 enemyTick++
             }

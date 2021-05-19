@@ -1,6 +1,5 @@
 import { players, ws, serverTick, interval, inputs, clientId, area, enemies, mainPlayer } from './ws.js'
 import input from './input.js'
-import bounce from './bounce.js'
 import drawDeath from './drawDeath.js'
 import drawScore from './drawScore.js'
 import './scaler.js'
@@ -32,7 +31,7 @@ function update() {
 
 document.addEventListener("visibilitychange", event => {
     if (document.visibilityState == "visible") {
-        if (timeLeft) enemyTick += Math.ceil((timeLeft - Date.now()) / 16.667)
+        if (timeLeft) enemyTick += Math.ceil((Date.now() - timeLeft) / (50 / 3) + 1)
         MainLoop.setUpdate(update).start()
     }
     else {

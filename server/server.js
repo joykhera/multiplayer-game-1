@@ -4,7 +4,6 @@ import msgpack from 'msgpack-lite'
 import MainLoop from 'mainloop.js'
 import { wsHandler, clients, players, area } from './ws.js'
 import game from './game.js'
-import bounce from './bounce.js'
 import path from 'path'
 
 const app = express(), port = process.env.PORT || 3000, __dirname = path.resolve();
@@ -23,7 +22,6 @@ MainLoop.setUpdate(() => {
     enemyTick++
     for (const player of players.values()) player.collision(game.enemies, players.values())
     for (const enemy of game.enemies) enemy.move(area)
-    // bounce(enemies)
     game.addEnemies(players.values(), clients, area)
 }).start()
 

@@ -3,7 +3,6 @@ import OtherPlayer from './otherPlayer.js'
 import Area from './area.js'
 import Enemy from './enemy.js'
 import { update, tick } from './index.js'
-import bounce from './bounce.js'
 
 const ws = new WebSocket(`${(location.protocol == 'http:') ? 'ws' : 'wss'}://${location.host}`)
 ws.binaryType = "arraybuffer"
@@ -20,7 +19,7 @@ ws.addEventListener('message', (buffer) => {
             area = new Area(msg.area)
             enemyTick = msg.enemyTick
             for (const enemy of msg.enemies) enemies.push(new Enemy(enemy))
-            for (let i = 0; i < Math.ceil((msg.time - Date.now()) / 16.667); i++) {
+            for (let i = 0; i < Math.ceil((Date.now() - msg.time) / (50 / 3) + 1); i++) {
                 for (const enemy of enemies) enemy.move(area)
                 enemyTick++
             }
@@ -35,12 +34,12 @@ ws.addEventListener('message', (buffer) => {
 
         case 2:
             // console.log(buffer.data)
-            console.log(msg.enemyTick, enemyTick)
+            // console.log(msg.enemyTick, enemyTick)
             serverTick = msg.tick
             const msgPlayers = new Map(msg.players)
 
             for (let i = 0; i < enemies.length; i++) Object.assign(enemies[i], msg.enemies[i])
-            if (msg.enemyTick > enemyTick) console.log('no assign')
+            // if (msg.enemyTick > enemyTick) console.log('no assign')
             for (const [id, player] of msgPlayers) {
                 const currentPlayer = players.get(id)
                 if (id != clientId) {
